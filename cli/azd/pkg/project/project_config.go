@@ -3,6 +3,7 @@ package project
 import (
 	"context"
 
+	"github.com/azure/azure-dev/cli/azd/pkg/cloud"
 	"github.com/azure/azure-dev/cli/azd/pkg/ext"
 	"github.com/azure/azure-dev/cli/azd/pkg/infra/provisioning"
 	"github.com/azure/azure-dev/cli/azd/pkg/platform"
@@ -24,6 +25,7 @@ type ProjectConfig struct {
 	Hooks             map[string]*ext.HookConfig `yaml:"hooks,omitempty"`
 	State             *state.Config              `yaml:"state,omitempty"`
 	Platform          *platform.Config           `yaml:"platform,omitempty"`
+	Cloud             *cloud.Config              `yaml:"cloud,omitempty"`
 
 	*ext.EventDispatcher[ProjectLifecycleEventArgs] `yaml:"-"`
 }
