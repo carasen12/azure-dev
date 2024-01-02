@@ -15,6 +15,7 @@ import (
 	"github.com/azure/azure-dev/cli/azd/internal"
 	"github.com/azure/azure-dev/cli/azd/pkg/account"
 	"github.com/azure/azure-dev/cli/azd/pkg/alpha"
+	"github.com/azure/azure-dev/cli/azd/pkg/cloud"
 	"github.com/azure/azure-dev/cli/azd/pkg/environment"
 	"github.com/azure/azure-dev/cli/azd/pkg/environment/azdcontext"
 	"github.com/azure/azure-dev/cli/azd/pkg/exec"
@@ -113,6 +114,7 @@ type deployAction struct {
 	packageActionInitializer actions.ActionInitializer[*packageAction]
 	alphaFeatureManager      *alpha.FeatureManager
 	importManager            *project.ImportManager
+	cloud                    *cloud.Cloud
 }
 
 func newDeployAction(
@@ -134,6 +136,7 @@ func newDeployAction(
 	packageActionInitializer actions.ActionInitializer[*packageAction],
 	alphaFeatureManager *alpha.FeatureManager,
 	importManager *project.ImportManager,
+	cloud *cloud.Cloud,
 ) actions.Action {
 	return &deployAction{
 		flags:                    flags,
@@ -154,6 +157,7 @@ func newDeployAction(
 		packageActionInitializer: packageActionInitializer,
 		alphaFeatureManager:      alphaFeatureManager,
 		importManager:            importManager,
+		cloud:                    cloud,
 	}
 }
 
@@ -308,7 +312,7 @@ func (da *deployAction) Run(ctx context.Context) (*actions.ActionResult, error) 
 	return &actions.ActionResult{
 		Message: &actions.ResultMessage{
 			Header:   fmt.Sprintf("Your application was deployed to Azure in %s.", ux.DurationAsText(since(startTime))),
-			FollowUp: getResourceGroupFollowUp(ctx, da.formatter, da.projectConfig, da.resourceManager, da.env, false),
+			FollowUp: getResourceGroupFollowUp(ctx, da.formatter, da.projectConfig, da.resourceManager, da.env, false, da.cloud.PortalUrlBase),
 		},
 	}, nil
 }
